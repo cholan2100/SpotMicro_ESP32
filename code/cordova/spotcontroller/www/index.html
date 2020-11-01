@@ -3,7 +3,7 @@
 	<head>
 		<title>Spot Controller</title>
 		<meta charset="utf-8">
-		<meta name="description" content="Spot Controller">
+		<meta name="description" content="Controller">
         <meta name="author" content="Maarten Weyn">
         <meta name="format-detection" content="telephone=no">
         <meta name="msapplication-tap-highlight" content="no">
@@ -19,7 +19,7 @@
 			<div id="ble_status" class="header_child"><i id="ble_button" class="fa fa-bluetooth" style="font-size:14px"></i> </div>
 			<div id="status" class="header_child">status</div>
 			<div id="spotposition" class="header_child">Position Unknown</div>
-			<div id="sleep_wake" class="header_child"><button id="sleep_wake_button">Sleep</button></div>
+			<div id="sleep_wake" class="header_child"><button id="sleep_btn">Sleep</button></div>
 		</div>
 
 		<div id="device" style="display: none;">
@@ -55,7 +55,38 @@
 							</div>
 					</ons-list> -->
 			</div>
-	</div>
+		</div>
+
+		<div id="waiting" style="margin: 20px auto; width: 320px; display: none;">
+			<ons-page>
+				<ons-toolbar>
+				  <div class="center">Spot Link</div>
+				</ons-toolbar>
+				<ons-list id="spot-devices-list">
+					<ons-list-header>Spots</ons-list-header>
+					<ons-list-item>
+						<div class="left"><ons-icon icon="md-bluetooth-search" size="40px"></ons-icon></div>
+						<div class="center"><span class="list-item__title">Scanning for robots</span></div>
+						<div class="right"><ons-progress-circular indeterminate></ons-progress-circular></div>
+					</ons-list-item>
+					<div id="spot-devices-div"><!-- fill here with devices --></div>
+				</ons-list>
+			</ons-page>
+		</div>
+		
+		<div id="sleep" style="margin: 20px auto; width: 320px; display: none;">
+			<ons-page>
+				<ons-toolbar>
+				<div class="center">Spot is Ready</div>
+				</ons-toolbar>
+			
+				<br><br>
+				<center>
+					<div class="center"><img src="/android_asset/www/sleep.jpg" alt="Sleeping" style="width:128px;height:128px;"></div>
+					<div class="center"><ons-button id="wakeup_btn"><< Wakeup >></ons-button></div>
+				</center>
+			</ons-page>
+		</div>
 		
 		<div id="controls">
 			<div id="joy1Div" style="width:200px;height:200px;margin:50px;position:fixed;top:10px;left:50px;"></div>
@@ -63,11 +94,15 @@
 			<div class="slidecontainer">
 				<input type="range" min="1" max="100" value="50" class="slider" id="slider1Div"  style="position:fixed;top:260px;left:100px;">
 			</div>
-			<div class="slidecontainer"></div>
+			<div class="slidecontainer">
 				<input type="range" min="1" max="100" value="50" class="slider-vertical" id="slider2Div"  style="position:fixed;top:160px;right:00px;">
 			</div>
+
+			<div id="commands" style="position:fixed;top:300px;left:100px;">
+				<!-- <div id="sit" class="header_child"><button id="sit_button" font-size:30px style="position:fixed;top:320px;left:100px;">Sit</button></div> -->
+				
+			</div>
 		</div>
-	
 
 		
 		<!-- <div id="logs" class="content"></div> -->

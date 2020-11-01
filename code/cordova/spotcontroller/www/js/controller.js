@@ -24,10 +24,18 @@ var controller = {
     initialize: function () {
         debug.log("UUID " + device.uuid, "success");
 
-        var joy1Param = { "title": "joystick1", "autoReturnToCenter": true };
+        var joy1Param = { "title": "joystick1", "autoReturnToCenter": true , 
+                            "internalFillColor": "#33B2FF",
+                            "internalStrokeColor": "#000000",
+                            "externalStrokeColor": "#FF3355"
+                        };
         controller.Joy1 = new JoyStick('joy1Div', joy1Param);
 
-        var joy2Param = { "title": "joystick2", "autoReturnToCenter": true };
+        var joy2Param = { "title": "joystick2", "autoReturnToCenter": true ,
+                            "internalFillColor": "#33B2FF",
+                            "internalStrokeColor": "#000000",
+                            "externalStrokeColor": "#FF3355"
+                        };
         controller.Joy2 = new JoyStick('joy2Div', joy2Param);
 
         controller.slider1 = document.getElementById('slider1Div');
@@ -35,8 +43,11 @@ var controller = {
         controller.slider1.addEventListener("touchend", controller.resetslider1, false);
         controller.slider2.addEventListener("touchend", controller.resetslider2, false);
 
-        sleepwakebutton = document.getElementById('sleep_wake_button');
-        sleepwakebutton.onclick = controller.sleepwake;
+        sleep_btn = document.getElementById('sleep_btn');
+        sleep_btn.onclick = controller.sleep_btn;
+
+        wakeup_btn = document.getElementById('wakeup_btn');
+        wakeup_btn.onclick = controller.wakeup;
 
         setInterval(controller.timer_callback, 500);
     },
@@ -46,15 +57,11 @@ var controller = {
     resetslider2: function() {
         controller.slider2.value = 50;
     },
-    sleepwake: function() {
-        controller.sleep = !controller.sleep;
-        if (controller.sleep) {
-            $('#sleep_wake_button').html("WAKE");
-            bluetooth.sendOrientation(0, 0, 0, -40, -170, 0);
-        } else {
-            $('#sleep_wake_button').html("SLEEP");
-            bluetooth.sendOrientation(0, 0, 0, 0, 0, 0);
-        }
+    wakeup: function () {
+        bluetooth.sendOrientation(0, 0, 0, 0, 0, 0);
+    },
+    sleep_btn: function() {
+        bluetooth.sendOrientation(0, 0, 0, -40, -170, 0);
     },
     sendButton: function (button) { 
         var buttonvalue = button.charCodeAt(0);

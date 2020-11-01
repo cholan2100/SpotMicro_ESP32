@@ -4,7 +4,7 @@
 #include "esp_dsp.h"
 #include "math.h"
 
-static char tag[] = "IK";
+// static char tag[] = "IK";
 
 #define RAD2DEGREES 57.295779513082321 // 180 / PI
 #define DEGREES2RAD 0.017453292519943

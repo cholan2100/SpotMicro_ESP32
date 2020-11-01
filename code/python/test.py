@@ -30,7 +30,7 @@ L = 207.5
 W = 78
 l1=60.5
 l2=10
-l3=100.7
+l3=100.7 #111.1  #100.7
 l4=118.5
 
 
@@ -88,6 +88,10 @@ def calcLegPoints(angles):
     return np.array([T0,T1,T2,T3,T4])
 
 def drawLegPoints(p):
+    # print("Leg: ", [x[0] for x in p],[x[2] for x in p],[x[1] for x in p])
+    print("Leg: ", [x[0] for x in p])
+    print("Leg: ", [x[2] for x in p])
+    print("Leg: ", [x[1] for x in p])
     plt.plot([x[0] for x in p],[x[2] for x in p],[x[1] for x in p], 'k-', lw=3)
     plt.plot([p[0][0]],[p[0][2]],[p[0][1]],'bo',lw=2)
     plt.plot([p[4][0]],[p[4][2]],[p[4][1]],'ro',lw=2)    
@@ -111,9 +115,11 @@ def drawRobot(Lp,angles,center):
     drawLegPair(Tlf,Trf,Lp[0],Lp[1])
     drawLegPair(Tlb,Trb,Lp[2],Lp[3])
 
-# drawRobot(Lp,(0.4,0,0),(0,0,0))
-# drawRobot(Lp,(0,0,0),(-40,-30,0)) // full sit
+# drawRobot(Lp,(0,0,0),(-40,-170,0)) # maarteen
+drawRobot(Lp,(0,0,0),(-40,-30,0)) // full sit
 # drawRobot(Lp,(0,0,0),(0,130,0)) # long stand
-drawRobot(Lp,(0,0,0),(-23,-40,0)) # sleep
+# drawRobot(Lp,(0,0,0),(-23,-40,0)) # sleep
+
+# drawRobot(Lp,(0,0,0),(0,-50,-6)) # from h/w
 
 plt.show()

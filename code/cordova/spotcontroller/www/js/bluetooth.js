@@ -20,6 +20,7 @@ var bluetooth = {
         hours: -1, // delay timer to start at certain time (Default: -1)
         minutes: -1, // delay timer to start at certain time (Default: -1)
     },
+    devices: [],
     initialize: function () {
         debug.log('Initialising bluetooth ...');
         bluetooth.refreshDeviceList();
@@ -71,14 +72,26 @@ var bluetooth = {
         else
             debug.log('no previousConnectedDevice ', 'error');
 
-        //if (device.name.toLowerCase().replace(/[\W_]+/g, "").indexOf('cme') > -1) {
-        var html = '<ons-list-item modifier="chevron" data-device-id="' + device.id + '" data-device-name="' + device.name + '" tappable>' +
-            '<span class="list-item__title">' + device.name + '</span>' +
-            '<span class="list-item__subtitle">' + device.id + '</span>' +
-            '</ons-list-item>';
+        var exists = false;
+        bluetooth.devices.forEach(function(item, index, array) {
+            if(item == device.id)
+                exists = true;         
+          })
+        if(!exists)
+        {
+            bluetooth.devices.push(device.id);
 
-        $('#ble-found-devices').append(html);
-        //}
+             //if (device.name.toLowerCase().replace(/[\W_]+/g, "").indexOf('cme') > -1) {
+            let spotImage = "/android_asset/www/cesar.jpg";
+            var html = '<ons-list-item data-device-id="' + device.id + '" data-device-name="' + device.name + '" data-device-conn="idle" tappable>' +
+                '<div class="left"><img class="list-item__thumbnail" src="'+ spotImage +'"></div>' +
+                '<div class="center">' +
+                    '<span class="list-item__title">' + device.name + '</span>' +
+                    '<span class="list-item__subtitle">' + device.id + '</span>' +
+                '</div>' +
+                '</ons-list-item>';
+            $('#spot-devices-div').append(html);
+        }
 
         if (previousConnectedDevice) {
             if (device.id == previousConnectedDevice.id) {
@@ -139,6 +152,33 @@ var bluetooth = {
 
         //bluetooth.sendTime();
         bluetooth.connected = true;
+
+        list_item = document.getElementById(bluetooth.connectedDevice.id);
+        if(list_item != undefined)
+        {
+            let spotImage = "/android_asset/www/cesar.jpg";
+            var html = '<ons-list-item id="' + bluetooth.connectedDevice.id +
+                            '" data-device-id="' + bluetooth.connectedDevice.id +
+                            '" data-device-name="' + bluetooth.connectedDevice.name +
+                            '" data-device-conn="connected" tappable>' +
+                        '<div class="left"><img class="list-item__thumbnail" src="'+ spotImage +'"></div>' +
+                        '<div class="center">' +
+                            '<span class="list-item__title">' + bluetooth.connectedDevice.name + '</span>' +
+                            '<span class="list-item__subtitle">' + bluetooth.connectedDevice.id + '</span>' +
+                        '</div>' +
+                        '<div class="right"><ons-icon icon="md-check-circle" size="40px"></ons-icon></div>' +
+                        '</ons-list-item>';
+                list_item.remove();
+                $('#spot-devices-div').append(html);
+
+
+                $('.ble-not-connected').hide();
+                $('.ble-connected').show();
+
+                $('#waiting').hide(); 
+                // $('#headerbar').show();
+                // $('#sleep').show();
+        }
     },
     connectDevice: function (deviceId, deviceName) {
         bluetooth.connectingDevice = {
@@ -184,6 +224,17 @@ var bluetooth = {
     onSend: function () {
         debug.log('Has send data', 'success');
     },
+
+    isSleeping: function() {
+        if(omega==0 && phi==0 && psi==0 && x==-40 && y==-170 && z==0)
+            return true
+        return false
+    },
+    isWakeup: function() {
+        if(omega==0 && phi==0 && psi==0 && x==0 && y==0 && z==0)
+            return true
+        return false
+    },
     onActuatorValue: function (data) {
         //data = new Uint8Array(data);
         var stringdata = toHexString(data, 12);
@@ -199,6 +250,15 @@ var bluetooth = {
         debug.log("Actuator: " + stringdata);
         html = '(' + omega + ',' + phi + ',' + psi + ',' + x + ',' + y + ',' + z + ')';
         $('#spotposition').html(html);
+
+        if(bluetooth.isSleeping())
+            $('#sleep').show();
+        if(bluetooth.isWakeup()) {
+            $('#sleep').hide();
+            $('#waiting').hide(); 
+            $('#headerbar').show();
+            $('#controls').show();
+        }
     },
     onSensorValue: function (data) {
         // data = new Uint8Array(data);
@@ -233,7 +293,7 @@ var bluetooth = {
             bluetooth.connectedDevice = {};
             debug.log('error and disconnected from ' + bluetooth.lastConnectedDeviceId, 'success');
             bluetooth.toggleConnectionButtons();
-            //window.BackgroundTimer.start(bluetooth.timerstart_successCallback, bluetooth.timerstart_errorCallback, bluetooth.background_timer_settings);
+            window.BackgroundTimer.start(bluetooth.timerstart_successCallback, bluetooth.timerstart_errorCallback, bluetooth.background_timer_settings);
         });
     },
     toggleConnectionButtons: function () {
@@ -245,13 +305,21 @@ var bluetooth = {
             $('#ble-connected-device').html(html);
             $('#ble_button').html("Connected");
 
-            $('.ble-not-connected').hide();
-            $('.ble-connected').show();
+            // $('.ble-not-connected').hide();
+            // $('.ble-connected').show();
+
+            // $('#waiting').hide(); 
+            // $('#headerbar').show();
+            // $('#controls').show();
         } else {
             $('#ble-connected-device').html('no device connected');
             $('.ble-not-connected').show();
             $('.ble-connected').hide();
             $('#ble_button').html("Not connected");
+
+            $('#waiting').show(); 
+            $('#headerbar').hide();
+            $('#controls').hide();
         }
     },
     refreshSentMessageList: function () {

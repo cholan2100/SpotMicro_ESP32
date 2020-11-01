@@ -37,19 +37,15 @@ typedef  struct {
     bool set;
 } position_t;
 
+// Rest position to begin with
 position_t spot_position = {.omega=0,.phi=0,.psi=0,.xm=-40,.ym=-170, .zm=0, .set=1};
 position_t goal_position = {0,};
 
-// const servo_settings_t servo_settings[12] = {{150, 400, 1}, {130, 420, 0}, {125, 430, 1},
-//                                           {150, 510, 0}, {100, 480, 1}, {130, 505, 0},
-//                                           {130, 500, 0}, {90, 490, 0}, {125, 430, 1},
-//                                           {120, 410, 1}, {150, 430, 1}, {145, 440, 0}};
+const int16_t servo_min[12] = {90,81,90, 95,94,75, 86,100,96, 115,110,85}; //FLS,FLU,FLL, FRS,FRU,FRL, RLS,RLU,RLL, RRS,RRU,RRL
+//FIXME: max values are guessed from first servo, instead find the actual duty cycle
+const int16_t servo_max[12] = {510,501,510, 515,514,495, 506,520,516, 525,530,505}; //FLS,FLU,FLL, FRS,FRU,FRL, RLS,RLU,RLL, RRS,RRU,RRL
 
-// const int16_t servo_min[12] = {153,118,138,  121,116,124,  131,88,125,  130,158,140};
-// const float servo_conversion[12] = {2.011111,1.955556,2.000000,2.050000,2.050000,2.061111,2.038889,2.177778,1.650000,2.027778,1.927778,1.694444};
-const int16_t servo_min[12] = {153,118,138,121,116,125,131,150,148,130,158,165};
-
-const float servo_conversion[12] = {2.011111,2.011111,2.000000,2.050000,1.966667,2.027778,2.038889,1.677778,1.622222,2.027778,1.927778,1.650000};
+float servo_conversion[12];
                                 //LF     //RF   //LB    //RB
 const int8_t servo_invert[12] = {1,0,1, 0,1,0,  0,0,1,  1,1,0};
 const float theta_range[3][2] = {{-M_PI / 3, M_PI/3}, {-2 * M_PI/3, M_PI/3}, {0, M_PI}};
@@ -64,14 +60,15 @@ void init_pca9685() {
     i2c_example_master_init();
     set_pca9685_adress(I2C_ADDRESS);
     resetPCA9685();
-    setFrequencyPCA9685(50); 
+    setFrequencyPCA9685(50);
 }
 
 float omega = 0; //Rx
 float psi = 0;  // Rz
 float height = 200;
 
-int16_t servo_angles[4][3] = {{90, 150, 0}, {90, 30, 180}, {90, 150, 0}, {90, 30, 180}};
+//note: rest angles be default
+int16_t servo_angles[4][3] = {{0,0,0},{0,0,0},{0,0,0},{0,0,0}};//{{90, 150, 0}, {90, 30, 180}, {90, 150, 0}, {90, 30, 180}}; // down angle
 int16_t servo_angles_goal[4][3] = {0,};
 float p[4][3] = {{-L1, -L3-L2, L4},{-L1, -L3-L2, L4},{-L1, -L3-L2, L4},{-L1, -L3-L2, L4}};
 
@@ -182,9 +179,9 @@ void set_leg_servos_in_steps() {
 
 void set_leg_servos() {
     for (int l = 0; l<4; l++) {
-    // for (int l = 1; l<2; l++) {    
         for (int s=0;s<3;s++) {
-            if (servo_angles[l][s] != servo_angles_goal[l][s]) {
+            // if (servo_angles[l][s] != servo_angles_goal[l][s]) 
+            {
                 servo_angles[l][s] = servo_angles_goal[l][s];
                 set_servo(l*3 + s, servo_angles[l][s]);
             }
@@ -209,7 +206,7 @@ void sleep_position()
 }
 
 void reset_position() {
-    set_orientation_cb(0, 0, 0, 0, 0, 0);
+    set_orientation_cb(0, 0, 0, -40, -170, 0);  // sleep
 }
 
 esp_err_t set_legs() {
@@ -220,8 +217,16 @@ esp_err_t set_legs() {
     return ret;
 }
 
+static int spot_state = 0;
+#define SPOT_STATE_SLEEP    0
+#define SPOT_STATE_WAKE     1
+
 void set_orientation_cb(int16_t omega, int16_t phi, int16_t psi, int16_t xm, int16_t ym, int16_t zm)
 {
+    spot_state = SPOT_STATE_WAKE;   
+    if(xm == -40 && ym == -170 && zm == 0)  // from python siimulations
+        spot_state = SPOT_STATE_SLEEP;
+    
     goal_position.omega = omega;
     goal_position.phi = phi;
     goal_position.psi = psi;
@@ -229,6 +234,30 @@ void set_orientation_cb(int16_t omega, int16_t phi, int16_t psi, int16_t xm, int
     goal_position.ym = ym;
     goal_position.zm = zm;
     goal_position.set = true;
+}
+
+static void spot_sleep()
+{
+    ESP_LOGI(tag, "Hard Sleep - manual servo override");
+    int angle[3] = {90,30,0};
+    for(int s = 0; s<3; s++)
+    {
+        for (int l = 0; l<4; l++)
+        {
+            //servo_invert[12] = {1,0,1, 0,1,0,  0,0,1,  1,1,0};
+            if (servo_invert[(l*3)+s] == 0)
+                servo_angles_goal[l][s] = 180 - angle[s];
+            else
+                servo_angles_goal[l][s] = 0 + angle[s];
+            
+        }
+    }
+
+
+    spot_position.omega = spot_position.phi = spot_position.psi = 0;
+    spot_position.xm = -40;
+    spot_position.ym = -170;
+    spot_position.zm = 0;
 }
 
 void iterate_to_position() {
@@ -307,25 +336,24 @@ void iterate_to_position() {
 
     ESP_LOGI(tag, "CURRENT (%f,%f,%f - %f,%f,%f) %d", spot_position.omega, spot_position.phi, spot_position.psi, spot_position.xm, spot_position.ym, spot_position.zm, spot_position.set);
     
-    esp_err_t ret = spot_IK(spot_position.omega*DEGREES2RAD, spot_position.phi*DEGREES2RAD, spot_position.psi*DEGREES2RAD, spot_position.xm, spot_position.ym, spot_position.zm, servo_angles_goal);
+    esp_err_t ret = spot_IK(spot_position.omega*DEGREES2RAD, spot_position.phi*DEGREES2RAD, spot_position.psi*DEGREES2RAD, 
+                            spot_position.xm, spot_position.ym, spot_position.zm, 
+                            servo_angles_goal);
     ESP_LOGD(tag, "Valid IK %d", ret==ESP_OK);
     if (ret == ESP_OK) {
         print_int_matrix((int16_t*) servo_angles_goal, 4, 3, "servo_angles_goal", false);
-        set_leg_servos();
     }
 
     } while (spot_position.set);
-
-
-    set_new_orientation_act_value((int16_t) spot_position.omega, (int16_t) spot_position.phi, (int16_t) spot_position.psi, (int16_t) spot_position.xm, (int16_t) spot_position.ym, (int16_t) spot_position.zm);
 }
 
+#if 0
 void iterate_to_position_exponetial() {
     ESP_LOGI(tag, "GOAL (%f,%f,%f - %f,%f,%f)", goal_position.omega, goal_position.phi, goal_position.psi, goal_position.xm, goal_position.ym, goal_position.zm);
 
     do {
         spot_position.set = false;
-        int diff = 0;
+        // int diff = 0;
 
         if (abs(goal_position.omega - spot_position.omega) < MOTION_STEP_ANGLE) {
             spot_position.omega = goal_position.omega;
@@ -383,21 +411,31 @@ void iterate_to_position_exponetial() {
 
     set_new_orientation_act_value((int16_t) spot_position.omega, (int16_t) spot_position.phi, (int16_t) spot_position.psi, (int16_t) spot_position.xm, (int16_t) spot_position.ym, (int16_t) spot_position.zm);
 }
+#endif
 
 void task_ik(void *ignore)
 {
     ESP_LOGI(tag, "Executing on core %d", xPortGetCoreID());
-    esp_err_t ret;
+    // esp_err_t ret;
+
+    int i=0;
+    for(i=0;i<12;i++)
+        servo_conversion[i] = (servo_max[i] - servo_min[i]) / 180.0;
 
     reset_position();
     
+#if 1
     while(1)
     {
         vTaskDelay(100 / portTICK_RATE_MS);
         if (goal_position.set) {
             goal_position.set = false;
 
-            iterate_to_position();
+
+            if(spot_state == SPOT_STATE_SLEEP)
+                spot_sleep();
+            else
+                iterate_to_position();
             
             // esp_err_t ret = spot_IK(spot_position.omega*DEGREES2RAD, spot_position.phi*DEGREES2RAD, spot_position.psi*DEGREES2RAD, spot_position.xm, spot_position.ym, spot_position.zm, servo_angles_goal);
             // ESP_LOGD(tag, "Valid IK %d", ret==ESP_OK);
@@ -408,13 +446,14 @@ void task_ik(void *ignore)
             
             //     set_new_orientation_act_value((int16_t) spot_position.omega, (int16_t) spot_position.phi, (int16_t) spot_position.psi, (int16_t) spot_position.xm, (int16_t) spot_position.ym, (int16_t) spot_position.zm);
             // }
+
+            set_leg_servos();
+            set_new_orientation_act_value((int16_t) spot_position.omega, (int16_t) spot_position.phi, (int16_t) spot_position.psi, (int16_t) spot_position.xm, (int16_t) spot_position.ym, (int16_t) spot_position.zm);
         }
-        // set_new_orientation_act_value(1, 0, 0, 0, 0, 0);
-        // vTaskDelay(2000 / portTICK_RATE_MS);
-        // set_new_orientation_act_value(2, 0, 0, 0, 0, 0);
 
 
     }
+#endif
 
     vTaskDelete(NULL);
 }
@@ -437,16 +476,15 @@ void app_main()
 
     // ESP_LOGI(tag, "Start Example.");
 
-    // float A[2][3] = {{0, 1, 0} , {0, 1, 2}};
-    // float B[3][2] = {{0, 0}, {1, 1}, {0, 1}};
-    // float C[2][2];
-    // dspm_mult_f32_ae32((float*) A, (float*) B,  (float*) C, 2, 2, 2);
+    // float A[3][3] = {{0, 1, 0} , {0, 1, 2}};
+    // float B[4][2] = {{0, 0}, {1, 1}, {0, 1}};
+    // float C[3][2];
+    // dspm_mult_f33_ae32((float*) A, (float*) B,  (float*) C, 2, 2, 2);
 
-    // ESP_LOGD(tag, "%.2f %.2f", C[0][0], C[0][1]);
-    // ESP_LOGD(tag, "%.2f %.2f", C[1][0], C[1][1]);
+    // ESP_LOGD(tag, "%.3f %.2f", C[0][0], C[0][1]);
+    // ESP_LOGD(tag, "%.3f %.2f", C[1][0], C[1][1]);
 
 
 
-    xTaskCreate(task_ik, "task_ik", 1024 * 2, (void* ) 0, 10, NULL);
+    xTaskCreate(task_ik, "task_ik", 1025 * 2, (void* ) 0, 10, NULL);
 }
-
