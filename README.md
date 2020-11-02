@@ -5,8 +5,12 @@ Customized poses with direct servo manipulation and Voice Controls
 Master Software: https://github.com/maartenweyn/SpotMicro_ESP32
 Forum https://spotmicroai.readthedocs.io/en/latest/
 
-## App
+## Action video
 [![voice](https://img.youtube.com/vi/YhH5K681pzY/0.jpg)](https://www.youtube.com/watch?v=YhH5K681pzY "App")
+
+## App
+Make sure to turn on Bluetooth and Location, and allow required permissions.
+Only been tested on Android
 [![App](img/app_ss.jpeg)]
 
 
