@@ -1,23 +1,32 @@
 # SpotMicro ESP32
+Customized poses with direct servo manipulation and Voice Controls
 
-This repository is a bunch of code which I use to develop the SpotMicro ESP32 which is designed by Michael Kubina.
-
-His repository with all the parts and a great assembly guide can be found on https://github.com/michaelkubina/SpotMicroESP32
-
-This SpotMicro is based on https://spotmicroai.readthedocs.io/en/latest/
-
-Discussions about the project and the other SpotMicro Projects are on slack: https://spotmicroai-inviter.herokuapp.com/
+3D model: https://github.com/michaelkubina/SpotMicroESP32
+Master Software: https://github.com/maartenweyn/SpotMicro_ESP32
+Forum https://spotmicroai.readthedocs.io/en/latest/
 
 ## Intermediate test
 
 
-[![IK Test](img/youtube_iktest.jpg)](https://youtu.be/9eIZ3Oao1og "IK Test")
+[![IK Test](img/cesar.jpg)](https://youtu.be/YhH5K681pzY "Voice COntrol")
 
 
-## Code in this repo
-The code on this repo is mostly based on the esp-idf :https://docs.espressif.com/projects/esp-idf/en/latest/esp32/ and is fully in development
+## Configure - IMPORTANT
+Update configuration for your ESP32 circuit at end of
+https://github.com/cholan2100/SpotMicro_ESP32/blob/master/code/esp-idf/ik_test/main/config.h
 
-There is also an early version of  (Android / ios) app to control the Spot using BLE, developped using Cordova: https://cordova.apache.org/
+```c
+#define I2C_MASTER_SCL_IO   22    /*!< gpio number for I2C master clock */
+#define I2C_MASTER_SDA_IO   23    /*!< gpio number for I2C master data  */
+#define I2C_ADDRESS         0x41    /*!< slave address for PCA9685, DEFAULT: 0x40 */
+#define SERVO_PWM_MIN       {90,81,90, 95,94,75, 86,100,96, 115,110,85} //FLS,FLU,FLL, FRS,FRU,FRL, RLS,RLU,RLL, RRS,RRU,RRL
+//FIXME: max values are guessed from first servo, instead find the actual duty cycleint8_t pwm_channel[12] = 
+#define SERVO_PWM_MAX       {510,501,510, 515,514,495, 506,520,516, 525,530,505} //FLS,FLU,FLL, FRS,FRU,FRL, RLS,RLU,RLL, RRS,RRU,RRL
 
+#define SERVO_CHANNELS      {/* FLS,FLU,FLL */ 12,13,14, \
+                             /* FRS,FRU,FRL */   8,9,10, \
+                             /* RLS,RLU,RLL */   4,5,6, \
+                             /* RRS,RRU,RRL */   0,1,2 } 
+```
 
 
