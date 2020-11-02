@@ -6,7 +6,8 @@ Master Software: https://github.com/maartenweyn/SpotMicro_ESP32
 Forum https://spotmicroai.readthedocs.io/en/latest/
 
 ## App
-[![App](https://img.youtube.com/vi/YhH5K681pzY/0.jpg)](https://www.youtube.com/watch?v=YhH5K681pzY "App")
+[![voice](https://img.youtube.com/vi/YhH5K681pzY/0.jpg)](https://www.youtube.com/watch?v=YhH5K681pzY "App")
+[![App](img/app_ss.jpeg)]
 
 
 ## Configure - IMPORTANT
