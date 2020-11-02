@@ -15,83 +15,49 @@
 		<script src="js/joy.js"></script>
 	</head>
 	<body>
-		<div id="headerbar">
-			<div id="ble_status" class="header_child"><i id="ble_button" class="fa fa-bluetooth" style="font-size:14px"></i> </div>
-			<div id="status" class="header_child">status</div>
-			<div id="spotposition" class="header_child">Position Unknown</div>
-			<div id="sleep_wake" class="header_child"><button id="sleep_btn">Sleep</button></div>
-		</div>
+		<ons-page id="spotlink">
+			<ons-toolbar>
+				<div class="center">Spot Link</div>
+			</ons-toolbar>
+			<ons-list id="spot-devices-list">
+				<ons-list-header>Spots</ons-list-header>
+				<ons-list-item>
+					<div class="left"><ons-icon icon="md-bluetooth-search" size="40px"></ons-icon></div>
+					<div class="center"><span class="list-item__title">Scanning for robots</span></div>
+					<div class="right"><ons-progress-circular indeterminate></ons-progress-circular></div>
+				</ons-list-item>
+				<div id="spot-devices-div"><!-- fill here with devices --></div>
+			</ons-list>
+		</ons-page>
 
-		<!-- <div id="device" style="display: none;">
-			<div class="ble-not-connected" style="display: none;">
-					<ons-list id="ble-devices">
-							<ons-list-item class="general">
-									<ons-button id="refreshDeviceList">Refresh device list</ons-button>
-							</ons-list-item>
-							<ons-list-header>Found bluetooth devices</ons-list-header>
-							<div id="ble-found-devices">
-									<ons-list-item>
-											<em>No Spots</em>
-									</ons-list-item>
-							</div>
-					</ons-list>
-			</div>
-			<div class="ble-connected" style="display: none;">
-					<ons-list>
-							<ons-list-header>Connected to</ons-list-header>
-							<ons-list-item id="ble-connected-device">
-									no device connected
-							</ons-list-item>
-							<ons-list-item class="general">
-									<ons-button id="disconnectDevice">Disconnect</ons-button>
-							</ons-list-item>
-					</ons-list>
-					<!-- <ons-list>
-							<ons-list-header>Ontvangen berichten</ons-list-header>
-							<div id="ble-received-messages">
-									<ons-list-item>
-											<em>geen berichten</em>
-									</ons-list-item>
-							</div>
-					</ons-list>
-			</div>
-		</div> -->
+		<ons-page id="sleep">
+			<ons-toolbar>
+			<div class="center">Spot is Ready</div>
+			</ons-toolbar>
+		
+			<br><br>
+			<!-- fixme -->
+			<center>
+				<div ><img src="/android_asset/www/sleep.jpg" alt="Sleeping" style="width:128px;height:128px;"></div>
+				<div ><ons-button id="wakeup_btn"><< Wakeup >></ons-button></div>
+			</center>
+			<ons-fab position="bottom right">
+				<ons-icon id ="voice_but1" icon="md-mic"></ons-icon>
+			</ons-fab>
+		</ons-page>
 
-		<div id="spotlink" style="margin: 20px auto; width: 320px; display: none;">
-			<ons-page>
-				<ons-toolbar>
-				  <div class="center">Spot Link</div>
-				</ons-toolbar>
-				<ons-list id="spot-devices-list">
-					<ons-list-header>Spots</ons-list-header>
-					<ons-list-item>
-						<div class="left"><ons-icon icon="md-bluetooth-search" size="40px"></ons-icon></div>
-						<div class="center"><span class="list-item__title">Scanning for robots</span></div>
-						<div class="right"><ons-progress-circular indeterminate></ons-progress-circular></div>
-					</ons-list-item>
-					<div id="spot-devices-div"><!-- fill here with devices --></div>
-				</ons-list>
-			</ons-page>
-		</div>
-		
-		<div id="sleep" style="margin: 20px auto; width: 320px; display: none;">
-			<ons-page>
-				<ons-toolbar>
-				<div class="center">Spot is Ready</div>
-				</ons-toolbar>
-			
-				<br><br>
-				<center>
-					<div class="center"><img src="/android_asset/www/sleep.jpg" alt="Sleeping" style="width:128px;height:128px;"></div>
-					<div class="center"><ons-button id="wakeup_btn"><< Wakeup >></ons-button></div>
-				</center>
-				<ons-fab position="bottom right">
-					<ons-icon id ="voice_but1" icon="md-mic"></ons-icon>
-				</ons-fab>
-			</ons-page>
-		</div>
-		
-		<div id="controls">
+		<ons-page id="controls">
+			<ons-toolbar>
+			  <div class="left">
+				<div id="status">status</div>
+				<div id="spotposition">Position</div>
+			  </div>
+		  
+			  <div class="right">
+				<ons-toolbar-button id="ble_button" icon="md-bluetooth-off"></ons-toolbar-button>
+			  </div>
+			</ons-toolbar>
+		  
 			<div id="joy1Div" style="width:200px;height:200px;margin:50px;position:fixed;top:10px;left:50px;"></div>
 			<div id="joy2Div" style="width:200px;height:200px;margin:50px;position:fixed;top:10px;right:50px;"></div>
 			<div class="slidecontainer">
@@ -105,13 +71,9 @@
 				<ons-icon id ="voice_but2" icon="md-mic"></ons-icon>
 			</ons-fab>
 			<div id="commands" style="position:fixed;top:300px;left:100px;">
-				<!-- <div id="sit" class="header_child"><button id="sit_button" font-size:30px style="position:fixed;top:320px;left:100px;">Sit</button></div> -->
-				
+				<ons-button id="sleep_btn" size="25px">Sleep</ons-button>
 			</div>
-		</div>
-
-		
-		<!-- <div id="logs" class="content"></div> -->
+		</ons-page>
         
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="lib/OnsenUI/js/onsenui.min.js"></script>

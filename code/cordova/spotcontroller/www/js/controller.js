@@ -43,12 +43,6 @@ var controller = {
         controller.slider1.addEventListener("touchend", controller.resetslider1, false);
         controller.slider2.addEventListener("touchend", controller.resetslider2, false);
 
-        sleep_btn = document.getElementById('sleep_btn');
-        sleep_btn.onclick = controller.sleep_btn;
-
-        wakeup_btn = document.getElementById('wakeup_btn');
-        wakeup_btn.onclick = controller.wakeup;
-
         setInterval(controller.timer_callback, 500);
     },
     resetslider1: function() {
@@ -56,12 +50,6 @@ var controller = {
     },
     resetslider2: function() {
         controller.slider2.value = 50;
-    },
-    wakeup: function () {
-        bluetooth.sendOrientation(0, 0, 0, 0, 0, 0);
-    },
-    sleep_btn: function() {
-        bluetooth.sendOrientation(0, 0, 0, -40, -170, 0);
     },
     sendButton: function (button) { 
         var buttonvalue = button.charCodeAt(0);

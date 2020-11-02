@@ -85,11 +85,10 @@ var bluetooth = {
             list_item = document.getElementById(device.id);
             if(list_item == undefined)
             {
-                let spotImage = "/android_asset/www/cesar.jpg";
                 var html = '<ons-list-item data-device-id="' + device.id + 
                             '" data-device-name="' + device.name + 
                             '" data-device-conn="idle" tappable>' +
-                    '<div class="left"><img class="list-item__thumbnail" src="'+ spotImage +'"></div>' +
+                    '<div class="left"><img class="list-item__thumbnail" src="'+ app.icon +'"></div>' +
                     '<div class="center">' +
                         '<span class="list-item__title">' + device.name + '</span>' +
                         '<span class="list-item__subtitle">' + device.id + '</span>' +
@@ -153,7 +152,6 @@ var bluetooth = {
         debug.log('Connected to ' + bluetooth.connectedDevice.id, 'success');
         //mqttclient.addMessage('device,1');
 
-        bluetooth.toggleConnectionButtons();
         window.BackgroundTimer.stop(bluetooth.timerstop_successCallback, bluetooth.timerstop_errorCallback);
 
         //bluetooth.sendTime();
@@ -162,12 +160,11 @@ var bluetooth = {
         list_item = document.getElementById(bluetooth.connectedDevice.id);
         if(list_item != undefined)
         {
-            let spotImage = "/android_asset/www/cesar.jpg";
             var html = '<ons-list-item id="' + bluetooth.connectedDevice.id +
                             '" data-device-id="' + bluetooth.connectedDevice.id +
                             '" data-device-name="' + bluetooth.connectedDevice.name +
                             '" data-device-conn="connected" tappable>' +
-                        '<div class="left"><img class="list-item__thumbnail" src="'+ spotImage +'"></div>' +
+                        '<div class="left"><img class="list-item__thumbnail" src="'+ app.icon +'"></div>' +
                         '<div class="center">' +
                             '<span class="list-item__title">' + bluetooth.connectedDevice.name + '</span>' +
                             '<span class="list-item__subtitle">' + bluetooth.connectedDevice.id + '</span>' +
@@ -177,12 +174,7 @@ var bluetooth = {
                 list_item.remove();
                 $('#spot-devices-div').append(html);
 
-                // $('.ble-not-connected').hide();
-                // $('.ble-connected').show();
-
-                $('#spotlink').hide(); 
-                // $('#headerbar').show();
-                // $('#sleep').show();
+                $('#spotlink').hide();
         }
     },
     connectDevice: function (deviceId, deviceName) {
@@ -210,17 +202,37 @@ var bluetooth = {
         };
     },
     onDisconnectDevice: function () {
+        var error_device  = bluetooth.connectedDevice;
         debug.log('Disconnected from ' + bluetooth.lastConnectedDeviceId, 'success');
         bluetooth.connectedDevice = {};
-        bluetooth.toggleConnectionButtons();
         bluetooth.connected = false;
+
+        list_item = document.getElementById(error_device.id);
+        if(list_item != undefined)
+        {
+            var html = '<ons-list-item id="' + error_device.id +
+                            '" data-device-id="' + error_device.id +
+                            '" data-device-name="' + error_device.name +
+                            '" data-device-conn="error" tappable>' +
+                        '<div class="left"><img class="list-item__thumbnail" src="'+ app.icon +'"></div>' +
+                        '<div class="center">' +
+                            '<span class="list-item__title">' + error_device.name + '</span>' +
+                            '<span class="list-item__subtitle">' + error_device.id + '</span>' +
+                        '</div>' +
+                        // '<div class="right"><ons-icon icon="md-close-circle" size="40px"></ons-icon></div>' +
+                        '</ons-list-item>';
+                list_item.remove();
+                $('#spot-devices-div').append(html);
+        }
+        
+        $('#controls').hide();
+        $('#spotlink').show();
     },
     disconnectDevice: function (event) {
         debug.log('Disconnecting from ' + bluetooth.connectedDevice.id);
 
         try {
             ble.disconnect(bluetooth.connectedDevice.id, bluetooth.onDisconnectDevice, bluetooth.onError);
-            bluetooth.toggleConnectionButtons();
         } catch (error) {
             debug.log('Disconnecting failed', 'error');
             console.log(error);
@@ -257,11 +269,12 @@ var bluetooth = {
         $('#spotposition').html(html);
 
         if(bluetooth.isSleeping())
+            $('#spotlink').hide(); 
+            $('#controls').hide();
             $('#sleep').show();
         if(bluetooth.isWakeup()) {
             $('#sleep').hide();
             $('#spotlink').hide(); 
-            $('#headerbar').show();
             $('#controls').show();
         }
     },
@@ -303,18 +316,16 @@ var bluetooth = {
 
             bluetooth.connectedDevice = {};
             debug.log('error and disconnected from ' + error_device.id, 'success');
-            bluetooth.toggleConnectionButtons();
             window.BackgroundTimer.start(bluetooth.timerstart_successCallback, bluetooth.timerstart_errorCallback, bluetooth.background_timer_settings);
 
             list_item = document.getElementById(error_device.id);
             if(list_item != undefined)
             {
-                let spotImage = "/android_asset/www/cesar.jpg";
                 var html = '<ons-list-item id="' + error_device.id +
                                 '" data-device-id="' + error_device.id +
                                 '" data-device-name="' + error_device.name +
                                 '" data-device-conn="error" tappable>' +
-                            '<div class="left"><img class="list-item__thumbnail" src="'+ spotImage +'"></div>' +
+                            '<div class="left"><img class="list-item__thumbnail" src="'+ app.icon +'"></div>' +
                             '<div class="center">' +
                                 '<span class="list-item__title">' + error_device.name + '</span>' +
                                 '<span class="list-item__subtitle">' + error_device.id + '</span>' +
@@ -328,32 +339,6 @@ var bluetooth = {
             $('#sleep').hide(); 
             $('#spotlink').show(); 
         });
-    },
-    toggleConnectionButtons: function () {
-        var connected = (bluetooth.connectedDevice.id !== undefined);
-        console.log('current ble connection status: ' + ((connected) ? 'connected' : 'not connected'));
-
-        if (connected) {
-            var html = '<br>' + bluetooth.connectedDevice.name + '</br>' +  ' ' + bluetooth.connectedDevice.id ;
-            // $('#ble-connected-device').html(html);
-            $('#ble_button').html("Connected");
-
-            // $('.ble-not-connected').hide();
-            // $('.ble-connected').show();
-
-            // $('#spotlink').hide(); 
-            // $('#headerbar').show();
-            // $('#controls').show();
-        } else {
-            // $('#ble-connected-device').html('no device connected');
-            // $('.ble-not-connected').show();
-            // $('.ble-connected').hide();
-            $('#ble_button').html("Not connected");
-
-            $('#spotlink').show(); 
-            // $('#headerbar').hide();
-            // $('#controls').hide();
-        }
     },
     refreshSentMessageList: function () {
         $('#ble-received-messages').empty();
