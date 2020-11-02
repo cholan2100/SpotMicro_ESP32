@@ -6,9 +6,6 @@ Master Software: https://github.com/maartenweyn/SpotMicro_ESP32
 Forum https://spotmicroai.readthedocs.io/en/latest/
 
 ## App
-
-
-[![IK Test](img/cesar.jpg)](https://youtu.be/YhH5K681pzY "Voice Control")
 [![App](https://img.youtube.com/vi/YhH5K681pzY/0.jpg)](https://www.youtube.com/watch?v=YhH5K681pzY "App")
 
 
