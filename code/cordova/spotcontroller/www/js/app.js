@@ -89,14 +89,21 @@ var app = {
                     indexes: ["Hello spot wakeup","Hello spot wake up", "wake up"],
                     action: function(){
                         console.log("VOICE: Waking up spot...");
-                        controller.wakeup();
+                        app.wakeup();
                     }
                 },
                 {
                     indexes: ["Hello spot sleep","sleep"],
                     action: function(){
                         console.log("VOICE: Putting to sleep...");
-                        controller.sleep_btn();
+                        app.sleep_btn();
+                    }
+                },
+                {
+                    indexes: ["Hello spot bark","bark"],
+                    action: function(){
+                        console.log("VOICE: barking...");
+                        app.bark_btn();
                     }
                 }
             ]);
@@ -145,12 +152,40 @@ var app = {
             storage.removeItem('connectedDevice');
             bluetooth.disconnectDevice(false);
         }
-        document.getElementById('sleep_btn').onclick = function() {
-            bluetooth.sendOrientation(0, 0, 0, -40, -170, 0);
-        }
-        document.getElementById('wakeup_btn').onclick = function() {
-            bluetooth.sendOrientation(0, 0, 0, 0, 0, 0);
-        }
+        document.getElementById('sleep_btn').onclick = app.sleep_btn;
+        document.getElementById('wakeup_btn').onclick = app.wakeup_btn;
+        document.getElementById('bark_btn').onclick = app.bark_btn;
+        document.getElementById('hifi_btn').onclick = app.hifi_btn;
+        document.getElementById('pee_btn').onclick = app.pee_btn;
+    },
+    sleep_btn: function() {
+        bluetooth.sendOrientation(0, 0, 0, -40, -170, 0);
+    },
+    wakeup_btn: function() {
+        bluetooth.sendOrientation(0, 0, 0, 0, 0, 0);
+    },
+    bark_btn: function() {
+        //TODO: play this on ESP32
+        var my_media = new Media("/android_asset/www/bark.mp3",
+            // success callback
+            function() {
+                console.log("playAudio():Audio Success");
+            },
+            // error callback
+            function(err) {
+                console.log("playAudio():Audio Error: "+err);
+        });
+    
+        // Play audio
+        my_media.play();
+    },
+    hifi_btn: function() {
+        //TODO:
+        ons.notification.toast('Not yet!', { timeout: 1000, animation: 'fall' });
+    },
+    pee_btn: function() {
+        //TODO:
+        ons.notification.toast('Defenitely Not yet!', { timeout: 1000, animation: 'fall' });
     },
 
     onDevicePause: function () {
