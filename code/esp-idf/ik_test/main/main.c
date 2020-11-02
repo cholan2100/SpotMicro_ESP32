@@ -41,9 +41,8 @@ typedef  struct {
 position_t spot_position = {.omega=0,.phi=0,.psi=0,.xm=-40,.ym=-170, .zm=0, .set=1};
 position_t goal_position = {0,};
 
-const int16_t servo_min[12] = {90,81,90, 95,94,75, 86,100,96, 115,110,85}; //FLS,FLU,FLL, FRS,FRU,FRL, RLS,RLU,RLL, RRS,RRU,RRL
-//FIXME: max values are guessed from first servo, instead find the actual duty cycle
-const int16_t servo_max[12] = {510,501,510, 515,514,495, 506,520,516, 525,530,505}; //FLS,FLU,FLL, FRS,FRU,FRL, RLS,RLU,RLL, RRS,RRU,RRL
+const int16_t servo_min[12] = SERVO_PWM_MIN;
+const int16_t servo_max[12] = SERVO_PWM_MAX;
 
 float servo_conversion[12];
                                 //LF     //RF   //LB    //RB

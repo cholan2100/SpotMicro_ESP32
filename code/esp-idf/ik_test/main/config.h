@@ -41,20 +41,27 @@ extern int16_t servo_angles[4][3];
 
 
 
-/// I2C
-#define I2C_MASTER_SCL_IO   22    /*!< gpio number for I2C master clock */
-#define I2C_MASTER_SDA_IO   23    /*!< gpio number for I2C master data  */
 #define I2C_MASTER_FREQ_HZ  100000     /*!< I2C master clock frequency */
 #define I2C_MASTER_NUM      I2C_NUM_0   /*!< I2C port number for master dev */
 #define I2C_MASTER_TX_BUF_DISABLE   0   /*!< I2C master do not need buffer */
 #define I2C_MASTER_RX_BUF_DISABLE   0   /*!< I2C master do not need buffer */
 
 
-#define I2C_ADDRESS     0x41    /*!< lave address for PCA9685 */
-
 #define ACK_CHECK_EN    0x1     /*!< I2C master will check ack from slave */
 #define ACK_CHECK_DIS   0x0     /*!< I2C master will not check ack from slave */
 #define ACK_VAL         0x0     /*!< I2C ack value */
 #define NACK_VAL        0x1     /*!< I2C nack value */
 
+/// Configure for Spot Micro Hardware on ESP32
+#define I2C_MASTER_SCL_IO   22    /*!< gpio number for I2C master clock */
+#define I2C_MASTER_SDA_IO   23    /*!< gpio number for I2C master data  */
+#define I2C_ADDRESS         0x41    /*!< slave address for PCA9685, DEFAULT: 0x40 */
+#define SERVO_PWM_MIN       {90,81,90, 95,94,75, 86,100,96, 115,110,85} //FLS,FLU,FLL, FRS,FRU,FRL, RLS,RLU,RLL, RRS,RRU,RRL
+//FIXME: max values are guessed from first servo, instead find the actual duty cycleint8_t pwm_channel[12] = 
+#define SERVO_PWM_MAX       {510,501,510, 515,514,495, 506,520,516, 525,530,505} //FLS,FLU,FLL, FRS,FRU,FRL, RLS,RLU,RLL, RRS,RRU,RRL
+
+#define SERVO_CHANNELS      {/* FLS,FLU,FLL */ 12,13,14, \
+                             /* FRS,FRU,FRL */   8,9,10, \
+                             /* RLS,RLU,RLL */   4,5,6, \
+                             /* RRS,RRU,RRL */   0,1,2 } 
 #endif
