@@ -22,7 +22,7 @@
 			<div id="sleep_wake" class="header_child"><button id="sleep_btn">Sleep</button></div>
 		</div>
 
-		<div id="device" style="display: none;">
+		<!-- <div id="device" style="display: none;">
 			<div class="ble-not-connected" style="display: none;">
 					<ons-list id="ble-devices">
 							<ons-list-item class="general">
@@ -53,11 +53,11 @@
 											<em>geen berichten</em>
 									</ons-list-item>
 							</div>
-					</ons-list> -->
+					</ons-list>
 			</div>
-		</div>
+		</div> -->
 
-		<div id="waiting" style="margin: 20px auto; width: 320px; display: none;">
+		<div id="spotlink" style="margin: 20px auto; width: 320px; display: none;">
 			<ons-page>
 				<ons-toolbar>
 				  <div class="center">Spot Link</div>
@@ -85,6 +85,9 @@
 					<div class="center"><img src="/android_asset/www/sleep.jpg" alt="Sleeping" style="width:128px;height:128px;"></div>
 					<div class="center"><ons-button id="wakeup_btn"><< Wakeup >></ons-button></div>
 				</center>
+				<ons-fab position="bottom right">
+					<ons-icon id ="voice_but1" icon="md-mic"></ons-icon>
+				</ons-fab>
 			</ons-page>
 		</div>
 		
@@ -98,6 +101,9 @@
 				<input type="range" min="1" max="100" value="50" class="slider-vertical" id="slider2Div"  style="position:fixed;top:160px;right:00px;">
 			</div>
 
+			<ons-fab position="bottom right">
+				<ons-icon id ="voice_but2" icon="md-mic"></ons-icon>
+			</ons-fab>
 			<div id="commands" style="position:fixed;top:300px;left:100px;">
 				<!-- <div id="sit" class="header_child"><button id="sit_button" font-size:30px style="position:fixed;top:320px;left:100px;">Sit</button></div> -->
 				
@@ -115,6 +121,7 @@
         <script type="text/javascript" src="js/storage.js"></script>
         <script type="text/javascript" src="js/controller.js"></script>
         <script type="text/javascript" src="js/bluetooth.js"></script>
-        <script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/artyom.window.min.js"></script>
 	</body>
 </html>

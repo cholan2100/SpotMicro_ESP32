@@ -14,7 +14,7 @@ var bluetooth = {
     currentmessage: new Uint8Array(100),
     currentmessagepointer: 0,
     background_timer_settings: {
-        timerInterval: 30000, // interval between ticks of the timer in milliseconds (Default: 60000)
+        timerInterval: 10000, // interval between ticks of the timer in milliseconds (Default: 60000)
         startOnBoot: false, // enable this to start timer after the device was restarted (Default: false)
         stopOnTerminate: true, // set to true to force stop timer in case the app is terminated (User closed the app and etc.) (Default: true)
         hours: -1, // delay timer to start at certain time (Default: -1)
@@ -82,15 +82,21 @@ var bluetooth = {
             bluetooth.devices.push(device.id);
 
              //if (device.name.toLowerCase().replace(/[\W_]+/g, "").indexOf('cme') > -1) {
-            let spotImage = "/android_asset/www/cesar.jpg";
-            var html = '<ons-list-item data-device-id="' + device.id + '" data-device-name="' + device.name + '" data-device-conn="idle" tappable>' +
-                '<div class="left"><img class="list-item__thumbnail" src="'+ spotImage +'"></div>' +
-                '<div class="center">' +
-                    '<span class="list-item__title">' + device.name + '</span>' +
-                    '<span class="list-item__subtitle">' + device.id + '</span>' +
-                '</div>' +
-                '</ons-list-item>';
-            $('#spot-devices-div').append(html);
+            list_item = document.getElementById(device.id);
+            if(list_item == undefined)
+            {
+                let spotImage = "/android_asset/www/cesar.jpg";
+                var html = '<ons-list-item data-device-id="' + device.id + 
+                            '" data-device-name="' + device.name + 
+                            '" data-device-conn="idle" tappable>' +
+                    '<div class="left"><img class="list-item__thumbnail" src="'+ spotImage +'"></div>' +
+                    '<div class="center">' +
+                        '<span class="list-item__title">' + device.name + '</span>' +
+                        '<span class="list-item__subtitle">' + device.id + '</span>' +
+                    '</div>' +
+                    '</ons-list-item>';
+                $('#spot-devices-div').append(html);
+            }
         }
 
         if (previousConnectedDevice) {
@@ -171,11 +177,10 @@ var bluetooth = {
                 list_item.remove();
                 $('#spot-devices-div').append(html);
 
+                // $('.ble-not-connected').hide();
+                // $('.ble-connected').show();
 
-                $('.ble-not-connected').hide();
-                $('.ble-connected').show();
-
-                $('#waiting').hide(); 
+                $('#spotlink').hide(); 
                 // $('#headerbar').show();
                 // $('#sleep').show();
         }
@@ -255,7 +260,7 @@ var bluetooth = {
             $('#sleep').show();
         if(bluetooth.isWakeup()) {
             $('#sleep').hide();
-            $('#waiting').hide(); 
+            $('#spotlink').hide(); 
             $('#headerbar').show();
             $('#controls').show();
         }
@@ -290,10 +295,38 @@ var bluetooth = {
         ble.isConnected(bluetooth.connectedDevice.id, function () {
             debug.log('error, but still connected');
         }, function () {
+            // update the list to error
+            var error_device = bluetooth.connectingDevice;
+            if(bluetooth.connectedDevice.id != undefined)
+                error_device = bluetooth.connectedDevice;   
+
+
             bluetooth.connectedDevice = {};
-            debug.log('error and disconnected from ' + bluetooth.lastConnectedDeviceId, 'success');
+            debug.log('error and disconnected from ' + error_device.id, 'success');
             bluetooth.toggleConnectionButtons();
             window.BackgroundTimer.start(bluetooth.timerstart_successCallback, bluetooth.timerstart_errorCallback, bluetooth.background_timer_settings);
+
+            list_item = document.getElementById(error_device.id);
+            if(list_item != undefined)
+            {
+                let spotImage = "/android_asset/www/cesar.jpg";
+                var html = '<ons-list-item id="' + error_device.id +
+                                '" data-device-id="' + error_device.id +
+                                '" data-device-name="' + error_device.name +
+                                '" data-device-conn="error" tappable>' +
+                            '<div class="left"><img class="list-item__thumbnail" src="'+ spotImage +'"></div>' +
+                            '<div class="center">' +
+                                '<span class="list-item__title">' + error_device.name + '</span>' +
+                                '<span class="list-item__subtitle">' + error_device.id + '</span>' +
+                            '</div>' +
+                            '<div class="right"><ons-icon icon="md-close-circle" size="40px"></ons-icon></div>' +
+                            '</ons-list-item>';
+                    list_item.remove();
+                    $('#spot-devices-div').append(html);
+            }
+            $('#controls').hide(); 
+            $('#sleep').hide(); 
+            $('#spotlink').show(); 
         });
     },
     toggleConnectionButtons: function () {
@@ -302,24 +335,24 @@ var bluetooth = {
 
         if (connected) {
             var html = '<br>' + bluetooth.connectedDevice.name + '</br>' +  ' ' + bluetooth.connectedDevice.id ;
-            $('#ble-connected-device').html(html);
+            // $('#ble-connected-device').html(html);
             $('#ble_button').html("Connected");
 
             // $('.ble-not-connected').hide();
             // $('.ble-connected').show();
 
-            // $('#waiting').hide(); 
+            // $('#spotlink').hide(); 
             // $('#headerbar').show();
             // $('#controls').show();
         } else {
-            $('#ble-connected-device').html('no device connected');
-            $('.ble-not-connected').show();
-            $('.ble-connected').hide();
+            // $('#ble-connected-device').html('no device connected');
+            // $('.ble-not-connected').show();
+            // $('.ble-connected').hide();
             $('#ble_button').html("Not connected");
 
-            $('#waiting').show(); 
-            $('#headerbar').hide();
-            $('#controls').hide();
+            $('#spotlink').show(); 
+            // $('#headerbar').hide();
+            // $('#controls').hide();
         }
     },
     refreshSentMessageList: function () {
