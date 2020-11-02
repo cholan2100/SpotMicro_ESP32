@@ -5,10 +5,11 @@ Customized poses with direct servo manipulation and Voice Controls
 Master Software: https://github.com/maartenweyn/SpotMicro_ESP32
 Forum https://spotmicroai.readthedocs.io/en/latest/
 
-## Intermediate test
+## App
 
 
-[![IK Test](img/cesar.jpg)](https://youtu.be/YhH5K681pzY "Voice COntrol")
+[![IK Test](img/cesar.jpg)](https://youtu.be/YhH5K681pzY "Voice Control")
+[![App](https://img.youtube.com/vi/YhH5K681pzY/0.jpg)](https://www.youtube.com/watch?v=YhH5K681pzY "App")
 
 
 ## Configure - IMPORTANT
