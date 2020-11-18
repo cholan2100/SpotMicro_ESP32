@@ -6,8 +6,8 @@
 #include "math.h"
 using namespace smk;
 
-#include <esp_log.h>
-static char tag[] = "IKTEST";
+// #include <esp_log.h>
+// static char tag[] = "IKTEST";
 
 
 
@@ -15,25 +15,16 @@ static char tag[] = "IKTEST";
 // kinematics operations for setting position/orientation of the robot
 // smk::SpotMicroKinematics sm_; 
 
-/**
- * Publish configuration to the motor driver
- */
-static int publishServoConfiguration()
-{
-    //TODO: set_servo(uint8_t id, uint16_t angle)
-    return 0;
-}
-
 
 extern "C" int controller_init()
 {
     // initialize state machine
-    SpotMicroMotionCmd node();
+    SpotMicroMotionCmd node;
 
     //TODO: servo angles state configuration
 
 
-    if(publishServoConfiguration() != 0)
+    if(node.publishServoConfiguration())
         return -1;
 
     return 0;
