@@ -13,7 +13,7 @@
             "compilerPath": "C:\\cygwin64\\bin\\gcc.exe",
             "cStandard": "c11",
             "cppStandard": "c++14",
-            "compileCommands": "${workspaceFolder}/build/compile_commands.json"
+            "compileCommands": "C:/Users/gsr/Documents/SpotMicro_ESP32/code/esp-idf/ik_test/build/compile_commands.json"
         }
     ],
     "version": 4

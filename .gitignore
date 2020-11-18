@@ -66,3 +66,11 @@ code/python/.ipynb_checkpoints/ik-checkpoint.ipynb
 code/python/.ipynb_checkpoints/ik-checkpoint.py
 code/python/.ipynb_checkpoints/test-checkpoint.py
 code/python/__pycache__/ik.cpython-37.pyc
+code/esp-idf/ik_test/sdkconfig.old
+code/esp-idf/ik_test/.vscode/c_cpp_properties.json
+code/esp-idf/ik_test/CMakeFiles/cmake.check_cache
+code/esp-idf/ik_test/CMakeFiles/CMakeError.log
+code/esp-idf/ik_test/CMakeFiles/CMakeOutput.log
+code/esp-idf/ik_test/CMakeFiles/3.13.4/CMakeSystem.cmake
+code/esp-idf/ik_test/CMakeFiles/3.13.4/CompilerIdC/CMakeCCompilerId.c
+code/esp-idf/ik_test/CMakeFiles/3.13.4/CompilerIdCXX/CMakeCXXCompilerId.cpp

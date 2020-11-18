@@ -23,6 +23,9 @@ Author Maarten Weyn
 #include "config.h"
 #include "bt_spp.h"
 
+#include "ik_tests.h"
+#include "motion_controller.h"
+
 static char tag[] = "IKTEST";
 
 #define DEGREES2RAD 0.017453292519943
@@ -457,6 +460,8 @@ void task_ik(void *ignore)
     vTaskDelete(NULL);
 }
 
+
+
 void app_main()
 {
     esp_err_t ret = nvs_flash_init();
@@ -483,6 +488,8 @@ void app_main()
     // ESP_LOGD(tag, "%.3f %.2f", C[0][0], C[0][1]);
     // ESP_LOGD(tag, "%.3f %.2f", C[1][0], C[1][1]);
 
+    ik_tests(); // do IK test checks
+    controller_init();
 
 
     xTaskCreate(task_ik, "task_ik", 1025 * 2, (void* ) 0, 10, NULL);
