@@ -21,7 +21,7 @@
 #include "spot_micro_idle.h"
 
 #include <esp_log.h>
-static char tag[] = "IKTEST";
+static char tag[] = "spot_mmcmd";
 
 
 using namespace smk;
