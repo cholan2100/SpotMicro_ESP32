@@ -5,6 +5,7 @@ idf_component_register(SRCS bt_spp.c
                             spot_ik.c 
                             ik_tests.cpp 
                             motion_controller.cpp 
+                            i2cpwm_controller.cpp
                             spot_micro_motion_cmd.cpp
                             smfsm/spot_micro_idle.cpp
                             smfsm/spot_micro_stand.cpp

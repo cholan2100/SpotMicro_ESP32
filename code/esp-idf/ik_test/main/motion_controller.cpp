@@ -21,6 +21,8 @@ extern "C" int controller_init()
     // initialize state machine
     SpotMicroMotionCmd node;
 
+    //ros::Rate rate(1.0/node.getNodeConfig().dt); // Defing the looping rate
+
     //TODO: servo angles state configuration
 
 

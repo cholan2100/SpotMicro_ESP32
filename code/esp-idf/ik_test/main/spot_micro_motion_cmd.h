@@ -14,6 +14,7 @@
 #else // ESP_PLATFORM
 #include <map>
 #include <vector>
+#include "i2cpwm_controller.h"
 #endif // ESP_PLATFORM
 
 #include "command.h"
@@ -138,54 +139,27 @@ class SpotMicroMotionCmd
   // struct
   void readInConfigParameters();
 
-#ifndef ESP_PLATFORM
   // Servo array message for servo proportional command
   i2cpwm_board::ServoArray servo_array_;
-
   // Servo array message for servo absolute command
   i2cpwm_board::ServoArray servo_array_absolute_;
 
-  // Ros publisher and subscriber handles
-  ros::NodeHandle nh_; // Defining the ros NodeHandle variable for registrating the same with the master
-  ros::NodeHandle pnh_; // Private version of node handle
-  ros::Subscriber stand_sub_; // ros subscriber handle for stand_cmd topic
-  ros::Subscriber idle_sub_; // ros subscriber handle for idle_cmd topic
-  ros::Subscriber walk_sub_;
-  ros::Subscriber speed_cmd_sub_; // includes body yaw rate as the z component
-  ros::Subscriber body_angle_cmd_sub_;
-  ros::Publisher servos_absolute_pub_;
-  ros::Publisher servos_proportional_pub_;
-  ros::Publisher body_state_pub_;
-  ros::Publisher sm_speed_cmd_pub_;
-  ros::Publisher sm_angle_cmd_pub_;
-  ros::Publisher sm_state_pub_;
-  ros::ServiceClient servos_config_client_;
-
-  // Body state cmd message
-  std_msgs::Float32MultiArray body_state_msg_;
-
-  // State string message, speed and angle command messages
-  std_msgs::String state_string_msg_;
-  geometry_msgs::Vector3 speed_cmd_msg_;
-  geometry_msgs::Vector3 angle_cmd_msg_;
-
+public:
   // Callback method for stand command
-  void standCommandCallback(const std_msgs::Bool::ConstPtr& msg);
+  void standCommandCallback();
 
   // Callback method for idle command
-  void idleCommandCallback(const std_msgs::Bool::ConstPtr& msg);
+  void idleCommandCallback();
 
   // Callback method for walk command
-  void walkCommandCallback(const std_msgs::Bool::ConstPtr& msg);
+  void walkCommandCallback();
 
   // Callback method for speed command
-  void speedCommandCallback(const geometry_msgs::Vector3ConstPtr& msg);
+  void speedCommandCallback(float x, float y, float z);
 
   // Callback method for angle command
-  void angleCommandCallback(const geometry_msgs::Vector3ConstPtr& msg);
-#else // ESP_PLATFORM
-  //TODO: implement ESP32 callbacks
-#endif // ESP_PLATFORM
+  void angleCommandCallback(float x, float y, float z);
+
   // Resets all events if they were true
   void resetEventCommands();
 
